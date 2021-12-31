@@ -25,6 +25,15 @@ def run_image():
     PATH_TO_LABELS = 'C:\\Users\\5-1\\Documents\\TensorFlow\\models\\research\\object_detection\\data\\mscoco_label_map.pbtxt'
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS,use_display_name=True)
 
+    print(category_index)
+
+    #모델 로드하는 함수
+    #https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md
+    #위 링크에서 모델을 가져올 수 있다
+
+    #/20200711/efficientdet_d0_coco17_tpu-32.tar.gz
+
+    # Download and extract model
     def download_model(model_name, model_date):
         base_url = 'http://download.tensorflow.org/models/object_detection/tf2/' #경로는 변하지 않음
         model_file = model_name + '.tar.gz'
@@ -32,10 +41,14 @@ def run_image():
                                             origin=base_url + model_date + '/' + model_file,
                                             untar=True)
         return str(model_dir)
+
+    #/20200711/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.tar.gz
     #모델 날짜와 모델 이름만 바뀜
     MODEL_DATE = '20200711'
     MODEL_NAME = 'ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8'
     PATH_TO_MODEL_DIR = download_model(MODEL_NAME, MODEL_DATE)
+
+
 
     def load_model(model_dir):
         model_full_dir = model_dir + "/saved_model"
@@ -46,15 +59,25 @@ def run_image():
 
     detection_model = load_model(PATH_TO_MODEL_DIR)
 
-    st.subheader('이미지를 업로드 해주세요.')
-    image_file = st.file_uploader('이미지를 업로드 하세요',type='jpg')
-        
-    PATH_TO_IMAGE_DIR = pathlib.Path(image_file)
+    # print(detection_model.signatures['serving_default'].inputs)
+    # print()
+    # print(detection_model.signatures['serving_default'].output_dtypes)
+    # print()
+    # print(detection_model.signatures['serving_default'].output_shapes)
+    # print()
+
+
+    #우리가 가지고 있는 이미지 경로에서 이미지를 가져오는 코드
+    PATH_TO_IMAGE_DIR = pathlib.Path('data\\images')
     IMAGE_PATHS = list(PATH_TO_IMAGE_DIR.glob('*.jpg'))
 
+    print(IMAGE_PATHS)
+
+
+    #이미지 경로에 있는 이미지를 넘파이 행렬로 변경해주는 함수
     def load_image_into_numpy_array(path):
         print(str(path))
-        return cv2.imread(path)
+        return cv2.imread(str(path))
 
     for image_path in IMAGE_PATHS:
 
@@ -104,6 +127,7 @@ def run_image():
             min_score_thresh=.30,
             agnostic_mode=False)
 
-        #cv2.imshow(str(image_path),image_np_with_detections)
+        cv2.imshow(str(image_path),image_np_with_detections)
 
-        st.image(cv2.imshow(image_path),image_np_with_detections)
+    cv2.waitKey(0)
+    
