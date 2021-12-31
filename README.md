@@ -1,1 +1,1 @@
-# Streamlit_Object_Detection
+# Image_Object_Detection_Streamlit
