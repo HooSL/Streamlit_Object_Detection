@@ -63,7 +63,7 @@ detection_model = load_model(PATH_TO_MODEL_DIR)
 # print(detection_model.signatures['serving_default'].output_shapes)
 # print()
 
-def show_inference(detection_model,image_np) :
+def show_inference(detection_model,image_np,min_score) :
 
     # The input needs to be a tensor, convert it using `tf.convert_to_tensor`.
     input_tensor = tf.convert_to_tensor(image_np)
@@ -94,11 +94,11 @@ def show_inference(detection_model,image_np) :
           category_index,
           use_normalized_coordinates=True,
           max_boxes_to_draw=200,
-          min_score_thresh=.50,
+          min_score_thresh= (min_score/100),
           agnostic_mode=False)
           
     img = Image.fromarray(image_np_with_detections)
     st.image(img,use_column_width=True)
 
-def run_object_detection(image_np):
-    show_inference(detection_model,image_np)
+def run_object_detection(image_np,min_score):
+    show_inference(detection_model,image_np,min_score)

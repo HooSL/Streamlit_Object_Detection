@@ -32,16 +32,19 @@ def main():
     
     if choice == 'Object Detection':
 
-        
-
 
         image_file = st.file_uploader('이미지를 업로드 하세요',type=['png','jpg','jpeg'])
         if image_file is not None :
+
+            #boxes = st.slider('Max Boxes',1,200,value=50)
+            min_score = st.slider('Score',1,100,value=30)
+            
+
             #프린트문은 디버깅용 터미널에 출력된다.
-            print(type(image_file))
-            print(image_file.name)
-            print(image_file.size)
-            print(image_file.type)
+            # print(type(image_file))
+            # print(image_file.name)
+            # print(image_file.size)
+            # print(image_file.type)
             
             #파일명 변경 후 저장
             image_file.name = 'test.jpg'
@@ -62,7 +65,7 @@ def main():
 
             img = np.array(img)
             #넘파이 어레이를 오브젝트 디택션함수에 넘겨준다
-            run_object_detection(img)
+            run_object_detection(img,min_score)
 
 
 if __name__ == '__main__':
